@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,7 +55,11 @@ public class BruteForceStrategy implements Strategy
      */
     private double computeProbability(final String combination)
     {
-        return 0.0;
+        double probability = 1.0;
+        for (int index = 0; index < combination.length(); ++index) {
+            probability *= combination.charAt(index) == 'S' ? p : q;
+        }
+        return probability;
     }
 
     /**
@@ -68,6 +74,20 @@ public class BruteForceStrategy implements Strategy
      */
     private boolean isSuccess(final int k, final String combination)
     {
+        // Alternative with regular expressions match.
+        //return combination.matches(".*[S]{" + k + ",}.*");
+        int longestStreak = 0;
+        for (int index = 0; index < combination.length(); ++index) {
+            if (combination.charAt(index) == 'S') {
+                ++longestStreak;
+                if (longestStreak >= k) {
+                    return true;
+                }
+            }
+            else {
+                longestStreak = 0;
+            }
+        }
         return false;
     }
 
@@ -84,6 +104,23 @@ public class BruteForceStrategy implements Strategy
      */
     private List<String> createCombinations(final int n)
     {
-        return Collections.emptyList();
+        if (n <= 0) {
+            return Collections.emptyList();
+        }
+        else if (n == 1) {
+            return Arrays.asList("S", "F");
+        }
+        else {
+            final List<String> combinations = createCombinations(n - 1);
+
+            final List<String> newCombinations =
+                    new ArrayList<>(combinations.size() * 2);
+            for (final String combination : combinations) {
+                newCombinations.add("S" + combination);
+                newCombinations.add("F" + combination);
+            }
+
+            return newCombinations;
+        }
     }
 }

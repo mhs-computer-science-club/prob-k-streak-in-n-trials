@@ -35,6 +35,36 @@ public class RecursiveSeriesStrategy implements Strategy
                                      final int n,
                                      final Map<Integer, Double> probs)
     {
-        return 0.0;
+        if (k > n)
+        {
+            return 0.0;
+        }
+        else
+        {
+            double sumFrom1Tok = 0.0;
+
+            for (int j = 1; j <= k; ++j)
+            {
+                //final double kInNMinusJ;
+                //
+                //if (probs.get(n - j) == null)
+                //{
+                //    kInNMinusJ = getProbKInNTosses(k, n - j, probs);
+                //    probs.put(n-j, kInNMinusJ);
+                //}
+                //else
+                //{
+                //    kInNMinusJ = probs.get(n - j);
+                //}
+                //
+                //sumFrom1Tok += Math.pow(p, j - 1) * q * kInNMinusJ;
+
+                final double probKInNMinusJ = probs.computeIfAbsent(
+                        n - j,
+                        key -> getProbKInNTosses(k, key, probs));
+                sumFrom1Tok += Math.pow(p, j - 1) * q * probKInNMinusJ;
+            }
+            return Math.pow(p, k) + sumFrom1Tok;
+        }
     }
 }
