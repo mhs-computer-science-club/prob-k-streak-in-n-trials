@@ -27,10 +27,42 @@ class ProbKStreakInNTossesTest
     }
 
     @ParameterizedTest
-    @MethodSource({"probKInNProviderSmall", "probKInNProviderLarge"})
-    void testRecursiveSeriesStrategy(final int k, final int n, final double expected)
+    @MethodSource("probKInNProviderSmall")
+    void testRecursiveStrategy(final int k, final int n, final double expected)
     {
-        final Strategy strategy = new RecursiveSeriesStrategy();
+        final Strategy strategy = new RecursiveStrategy();
+
+        final double probKInNTosses = assertTimeoutPreemptively(
+                Duration.ofSeconds(2),
+                () -> strategy.getProbKInNTosses(k, n));
+
+        assertEquals(
+                expected,
+                Math.round(probKInNTosses * 10000) / 100.0,
+                String.format("Probability of %s streak in %s tosses.", k, n));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"probKInNProviderSmall", "probKInNProviderLarge"})
+    void testDPTopDownStrategy(final int k, final int n, final double expected)
+    {
+        final Strategy strategy = new DPTopDownStrategy();
+
+        final double probKInNTosses = assertTimeoutPreemptively(
+                Duration.ofSeconds(2),
+                () -> strategy.getProbKInNTosses(k, n));
+
+        assertEquals(
+                expected,
+                Math.round(probKInNTosses * 10000) / 100.0,
+                String.format("Probability of %s streak in %s tosses.", k, n));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"probKInNProviderSmall", "probKInNProviderLarge"})
+    void testDPBottomUpStrategy(final int k, final int n, final double expected)
+    {
+        final Strategy strategy = new DPBottomUpStrategy();
 
         final double probKInNTosses = assertTimeoutPreemptively(
                 Duration.ofSeconds(2),

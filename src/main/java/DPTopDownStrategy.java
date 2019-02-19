@@ -1,7 +1,13 @@
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RecursiveSeriesStrategy implements Strategy
+/**
+ * Dynamic programming top-down with memoization solution.
+ *
+ * <p>
+ * S(k,n) = p^k + SUM({p^(j-1) * (1-p) * S(k,n-j)} for j = 1 to min(k,n-k))
+ */
+public class DPTopDownStrategy implements Strategy
 {
     private static final double p = 0.5;
     private static final double q = 1.0 - p;
@@ -23,48 +29,37 @@ public class RecursiveSeriesStrategy implements Strategy
      * that a term such as S(k, n-4) is needed for S(k, n-3), S(k, n-2), etc.
      *
      * <p>
-     * TODO - CHECK POINT 2
+     * TODO - CHECK POINT 3
      *
      * @param k The number of successes in a streak required.
      * @param n The number of independent Bernoulli trials.
-     * @param probs The results map to store intermediate computations.
+     * @param cache The results map to store intermediate computations.
      *
      * @return The probability of k successes in a row when performing n trials.
      */
     private double getProbKInNTosses(final int k,
                                      final int n,
-                                     final Map<Integer, Double> probs)
+                                     final Map<Integer, Double> cache)
     {
-        if (k > n)
-        {
-            return 0.0;
-        }
-        else
-        {
-            double sumFrom1Tok = 0.0;
+        double sum = Math.pow(p, k);
 
-            for (int j = 1; j <= k; ++j)
+        for (int j = 1; j <= Math.min(k, n-k); ++j)
+        {
+            final double subTerm;
+
+            if (cache.containsKey(n - j))
             {
-                //final double kInNMinusJ;
-                //
-                //if (probs.get(n - j) == null)
-                //{
-                //    kInNMinusJ = getProbKInNTosses(k, n - j, probs);
-                //    probs.put(n-j, kInNMinusJ);
-                //}
-                //else
-                //{
-                //    kInNMinusJ = probs.get(n - j);
-                //}
-                //
-                //sumFrom1Tok += Math.pow(p, j - 1) * q * kInNMinusJ;
-
-                final double probKInNMinusJ = probs.computeIfAbsent(
-                        n - j,
-                        key -> getProbKInNTosses(k, key, probs));
-                sumFrom1Tok += Math.pow(p, j - 1) * q * probKInNMinusJ;
+                subTerm = cache.get(n - j);
             }
-            return Math.pow(p, k) + sumFrom1Tok;
+            else
+            {
+                subTerm = getProbKInNTosses(k, n - j, cache);
+                cache.put(n - j, subTerm);
+            }
+
+            sum += Math.pow(p, j - 1) * q * subTerm;
         }
+
+        return sum;
     }
 }
