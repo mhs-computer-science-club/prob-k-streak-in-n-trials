@@ -41,25 +41,6 @@ public class DPTopDownStrategy implements Strategy
                                      final int n,
                                      final Map<Integer, Double> cache)
     {
-        double sum = Math.pow(p, k);
-
-        for (int j = 1; j <= Math.min(k, n-k); ++j)
-        {
-            final double subTerm;
-
-            if (cache.containsKey(n - j))
-            {
-                subTerm = cache.get(n - j);
-            }
-            else
-            {
-                subTerm = getProbKInNTosses(k, n - j, cache);
-                cache.put(n - j, subTerm);
-            }
-
-            sum += Math.pow(p, j - 1) * q * subTerm;
-        }
-
-        return sum;
+        return 0.0;
     }
 }

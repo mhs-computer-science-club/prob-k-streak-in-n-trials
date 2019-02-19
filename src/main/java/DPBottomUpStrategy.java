@@ -16,11 +16,13 @@ public class DPBottomUpStrategy implements Strategy
     {
         final TreeMap<Integer, Double> cache = new TreeMap<>();
 
+        // TODO - CHECK POINT 4 : Iterate for m=k..n and store in cache.
         for (int m = k; m <= n; ++m) {
             cache.put(m, getProbKInNTosses(k, m, cache));
         }
 
-        return cache.get(n);
+        // TODO - CHECK POINT 4 : What do we return?
+        return 0.0;
     }
 
     /**
@@ -45,12 +47,6 @@ public class DPBottomUpStrategy implements Strategy
                                      final int n,
                                      final TreeMap<Integer, Double> cache)
     {
-        double sum = Math.pow(p, k);
-
-        for (int j = 1; j <= Math.min(k, n-k); ++j) {
-            sum += Math.pow(p, j - 1) * q * cache.get(n - j);
-        }
-
-        return sum;
+        return 0.0;
     }
 }

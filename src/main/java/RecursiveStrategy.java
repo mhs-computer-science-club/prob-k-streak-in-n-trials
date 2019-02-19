@@ -24,12 +24,6 @@ public class RecursiveStrategy implements Strategy
     @Override
     public double getProbKInNTosses(final int k, final int n)
     {
-        double sum = Math.pow(p, k);
-
-        for (int j = 1; j <= Math.min(k, n-k); ++j) {
-            sum += Math.pow(p, j - 1) * q * getProbKInNTosses(k, n - j);
-        }
-
-        return sum;
+        return 0.0;
     }
 }
